@@ -1,5 +1,6 @@
 # Playbook to create droplet and write hosts info in inventory file
-# ansible-playbook -i ./inventory/crt_droplet create_droplet.yml -e "crt_DropletHost=ArtemTest1 droplet_name=artemTest1 droplet_tags="
+# ansible-playbook -i ./inventory/crt_droplet create_droplet.yml -e "crt_DropletHost=ArtemTest1 droplet_name=artemTest1 
+# droplet_tags= digital_ocean_token= droplet_region=fra droplet_size=s-1vcpu-1gb droplet_image=ubuntu-24-04-x64 ENV=stage "
 ---
 - hosts: localhost
   vars_files: 
@@ -8,6 +9,14 @@
     - "{{ inventory_file }}.conf"
 
   vars:
+    crt_DropletHost:                              Test1
+    droplet_name:                                 test1
+    droplet_tags:                                 ""
+    digital_ocean_token:                          ""
+    droplet_region:                               fra
+    droplet_size:                                 s-1vcpu-1gb
+    droplet_image:                                ubuntu-24-04-x64
+    ENV:                                          stage
     crtDropletHost:                               "{{ crt_DropletHost | default('crtDroplet') }}"
     full_droplet_hostname:                        "{{ ENV }}-{{ droplet_region | default('fra') }}-{{ droplet_name }}"
     

@@ -27,14 +27,13 @@ Need to work:
 Usage example:
     1) playbook: include_role: 
                    name: config_security_ubuntu
-    2) ansible-playbook <your playbook name> --ask-become-pass
+    2) ansible-playbook <your playbook name> 
 
 Variables list:
 
 # Variables for sshd configuration
 ssh_port:               ""                      ( New sshd port )
 local_user:             ""                      ( Localhost user )
-path_to_inventory:      ""                      ( Pass to your inventory file )
 
 # Variables for fail2ban configuration
 path_for_logs:          "/var/log/auth.log"     ( Pass to your sshd log file ) 
