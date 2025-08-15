@@ -1,0 +1,42 @@
+---
+- name: restart ssh
+  service:
+     name:                                 ssh
+     state:                                restarted
+
+- name: restart daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload:                         yes
+
+- name: restart docker 
+  service:
+    name:                                  docker 
+    state:                                 restarted
+
+# For yml format (must be correct!)
+#- name: add port to inventory file
+#  delegate_to:                            localhost
+#  lineinfile:
+#    path:                                 "{{ path_to_inventory }}" 
+#    regexp:                               '^(\s*)ansible_ssh_port:\s*\d+'
+#    line:                                 '\1ansible_ssh_port: {{ ssh_port }}'
+#    backrefs:                             yes    
+#    state:                                present
+
+# For ini format (test-fra-dropletTest ansible_ssh_host=127.0.0.1 ansible_ssh_port=22 )
+- name: add port to inventory file
+  delegate_to:                            localhost
+  become:                                 false
+  lineinfile:
+    path:                                 "{{ inventory_file }}"
+    regexp:                               "^{{ inventory_item }}.*ansible_ssh_port="
+    line:                                 "{{ inventory_item }} ansible_ssh_host={{ hostvars[inventory_item].ansible_ssh_host }} ansible_ssh_port={{ ssh_port }}"
+  loop:                                   "{{ ansible_play_hosts }}"
+  loop_control:
+    loop_var:                             inventory_item
+
+
+- name: restart fail2ban 
+  service:
+    name:                                 fail2ban
+    state:                                restarted

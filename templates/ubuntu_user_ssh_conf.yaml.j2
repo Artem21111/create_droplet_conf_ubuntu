@@ -1,0 +1,26 @@
+{% set devops_users = users | selectattr('group', 'equalto', 'DevOps') | list %}
+#cloud-config
+users:
+{% for user in devops_users %}
+  - name: {{ user.username }}
+    shell: "{{ user.user_shell }}"
+    passwd: "{{ user.password }}"
+    sudo: "{{ user.sudo_rule }}"
+    lock_passwd: false
+    chpasswd:
+      expire: false
+    ssh_authorized_keys:
+      - "{{ user.ssh_key }}"
+    group: {{ user.group }}
+    groups: [{{ user.groups | join(', ') }}]
+{% endfor %}
+  - name: root
+    shell: /bin/bash
+    lock_passwd: false
+    chpasswd:
+      expire: false
+    ssh_authorized_keys:
+      - "{{ root_ssh_key }}"
+
+runcmd:
+  - sed -i 's|^root:[^:]*:|root:{{ pass_for_root }}:|' /etc/shadow

@@ -1,0 +1,19 @@
+[all:vars]
+ENV=test
+
+[crtDroplet]
+test-fra-dropletTest ansible_ssh_host=127.0.0.1 ansible_connection=local ansible_ssh_port=22 
+[ArtemTest1]
+test-fra-artemTest9 ansible_ssh_host=207.154.249.108 ansible_ssh_port=7272 ansible_user=artem_baidikov
+test-fra-artemTest8 ansible_ssh_host=159.223.23.226 ansible_ssh_port=22
+test-fra-artemTest7 ansible_ssh_host=134.122.70.72 ansible_ssh_port=22 ansible_user=artem_baidikov
+test-fra-artemTest6 ansible_ssh_host=157.230.125.45 ansible_ssh_port=22
+test-fra-artemTest2 ansible_ssh_host=167.172.171.35 ansible_ssh_port=22
+test-fra-artemTest1 ansible_ssh_host=138.197.178.40 ansible_ssh_port=22
+[ArtemTest2]
+test-fra-artemTest6 ansible_ssh_host=209.38.244.194 ansible_ssh_port=22 ansible_ssh_private_key_file=~/.ssh/id_ed25519 ansible_user=artem_baidikov
+[ArtemTest3]
+test-fra-artemTest11 ansible_ssh_host=157.230.108.179 ansible_ssh_port=8383
+test-fra-artemTest10 ansible_ssh_host=165.22.92.73 ansible_ssh_port=8383
+[ArtemTest8]
+test-fra-artemTest80 ansible_ssh_host=159.65.127.132 ansible_ssh_port=22

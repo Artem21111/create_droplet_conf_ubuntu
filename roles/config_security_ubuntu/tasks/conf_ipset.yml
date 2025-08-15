@@ -1,0 +1,39 @@
+# Configure ipset with whitelist
+    - name: check list
+      command:                                 ipset list
+      register:                                check_list
+
+    - name: create whitelist
+      command:                                 ipset create whitelist hash:net 
+      when:                                    check_list is not search('whitelist')
+
+    - name: check ip addresses from inventory file
+      delegate_to:                             localhost
+      slurp:
+        src:                                   "{{ inventory_file }}"
+      register:                                ip_content
+
+    - name: decode inventory file
+      set_fact:
+        decoded_ip_content:                    "{{ ip_content['content'] | b64decode }}"
+
+    - name: find all ipv4 addresses
+      set_fact:
+        find_ip_addresses:                      "{{ decoded_ip_content | regex_findall('\\b(\\d{1,3}(?:\\.\\d{1,3}){3})\\b') }}"
+      when:                                     decoded_ip_content is search('.')
+
+# List merging from inventory and json files
+    - name: create one list with new ip adress
+      set_fact:
+        united_list:                            "{{ find_ip_addresses + (firewall_status | community.general.json_query('allow.hosts_for_firewall[*].ip_address')) }}"
+
+    - name: add ip addreess to white list from inventory and json files
+      command:                                  ipset add whitelist {{ item }}
+      loop:                                     "{{ united_list }}"
+      ignore_errors:                            true
+      register:                                 check_ip_in_whitelist_add
+
+    - name: message if ip adress is already added
+      debug:
+        msg:                                    "Your ip is already added!"
+      when:                                     check_ip_in_whitelist_add is search('already added')

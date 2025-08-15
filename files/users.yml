@@ -1,0 +1,29 @@
+# For users vars
+users:
+ - username: artem_baidikov
+   group:                       "DevOps"
+   groups:                      ["DevOps", "sudo", "sharedLog"]
+   password:                    "$6$.Rwm62GcO5yUUSQc$BgWwF8SzsTBTp2XIN8XKJ0y2V4j0DHYG.vyE4ec72mNv1tXCzjxG6a215sno.2gHWikanFZpbGzdoxITKZeKq0"
+   ssh_key:                     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBUUaYSsfMr85lkUxn0DI5CnHeZXVQV9dOKzpWZqM977 artembaidikov@MacBook-Air-Artem.local
+   user_shell:                  /bin/bash
+   sudo_rule:                   ALL=(ALL) ALL
+
+ - username: artem_not
+   group:                       "Not"
+   groups:                      ["DevOps", "sudo", "sharedLog"]
+   password:                    "$6$.Rwm62GcO5yUUSQc$BgWwF8SzsTBTp2XIN8XKJ0y2V4j0DHYG.vyE4ec72mNv1tXCzjxG6a215sno.2gHWikanFZpbGzdoxITKZeKq0"
+   ssh_key:                     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBUUaYSsfMr85lkUxn0DI5CnHeZXVQV9dOKzpWZqM977 artembaidikov@MacBook-Air-Artem.local
+   user_shell:                  /bin/bash
+   sudo_rule:                   ALL=(ALL) ALL
+
+ - username: artem
+   group:                       "DevOps"
+   groups:                      ["DevOps", "sudo", "sharedLog"]
+   password:                    "$6$.Rwm62GcO5yUUSQc$BgWwF8SzsTBTp2XIN8XKJ0y2V4j0DHYG.vyE4ec72mNv1tXCzjxG6a215sno.2gHWikanFZpbGzdoxITKZeKq0"
+   ssh_key:                     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBUUaYSsfMr85lkUxn0DI5CnHeZXVQV9dOKzpWZqM977 artembaidikov@MacBook-Air-Artem.local
+   user_shell:                  /bin/bash
+   sudo_rule:                   ALL=(ALL) ALL
+
+# For root vars
+root_ssh_key:                   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPI84MNKX7dk9FUw4UiEhksKdScjHvdz4efZADJgpnKD artembaidikov@MacBook-Air-Artem.local # First root ssh key
+pass_for_root:                  "$6$.Rwm62GcO5yUUSQc$BgWwF8SzsTBTp2XIN8XKJ0y2V4j0DHYG.vyE4ec72mNv1tXCzjxG6a215sno.2gHWikanFZpbGzdoxITKZeKq0"

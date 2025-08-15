@@ -1,0 +1,21 @@
+# Configure iptables
+    - name: Setup ipset tables INPUT SSH 
+      ansible.builtin.iptables:
+        comment:                                "{{ item.description }}"
+        chain:                                  "{{ item.chain }}"
+        match:                                  set
+        match_set:                              whitelist 
+        match_set_flags:                        src
+        jump:                                   "{{ item.rule }}"
+        destination_port:                       "{{ item.port }}"
+        protocol:                               "{{ item.protocol }}"
+        state:                                  present
+      loop:                                     "{{ firewall_status | community.general.json_query(iptables_rule) }}"
+      vars:
+        iptables_rule:                          "allow.hosts_for_firewall[?name=='ssh']"
+      
+    - name: block icmp
+      ansible.builtin.iptables:
+        chain:                                  INPUT
+        protocol:                               icmp
+        jump:                                   DROP

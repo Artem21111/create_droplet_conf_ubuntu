@@ -1,0 +1,13 @@
+# ansible-playbook -i ./inventory/crt_droplet deploy_ubuntu_security.yml -e "deploySecurityConf=ArtemTest3 install_docker=(yes/'') conf_docker=(yes/'')"
+---
+- hosts: "{{ deploySecurityConf }}"
+  become: true
+  vars_files: 
+    - ./vars/firewall_status.json
+    - "{{ inventory_file }}.conf"
+
+  tasks:
+    - name: start role
+      include_role: 
+        name:                                     config_security_ubuntu
+

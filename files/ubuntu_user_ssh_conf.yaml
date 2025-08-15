@@ -1,0 +1,11 @@
+#cloud-config
+users:
+  - name: artem_baidikov
+    shell: /bin/bash
+    passwd: "$6$randomsalt$F7pbAlF2H.KUD2JO/OInEPNaMG84mVYyQu3IzU6/I1d0B8CF6.IUG4xih2yWl90o6/aigrQUVGjWk.79sk1FRrXKL.sEEYhk/7tMpi."
+    sudo: ALL=(ALL) ALL
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBUUaYSsfMr85lkUxn0DI5CnHeZXVQV9dOKzpWZqM977 artembaidikov@MacBook-Air-Artem.local
+    groups:
+      - adm
+      - sudo

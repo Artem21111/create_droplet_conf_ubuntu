@@ -1,0 +1,10 @@
+[DEFAULT]
+ignoreip = {{ ignore_ip | join(' ') }}
+bantime  = {{ ban_time }}
+findtime = {{ find_time }}
+maxretry = {{ max_trys }}
+
+[sshd]
+port = {{ ssh_port }}
+logpath = {{ path_for_logs }}
+backend = auto

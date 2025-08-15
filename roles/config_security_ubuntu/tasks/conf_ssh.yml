@@ -1,0 +1,54 @@
+# Check actuali ssh port
+    - name: check ssh port
+      slurp:
+        src:                                  /etc/ssh/sshd_config
+      register:                               file_content
+
+    - name: decode file content
+      set_fact:
+        decoded_file_content:                 "{{ file_content['content'] | b64decode }}"
+
+    - name: find port
+      set_fact:
+        find_port:                            "{{ decoded_file_content | regex_search('^Port\\s+(\\d+)', '\\1', multiline=True) }}"
+      when:                                   decoded_file_content is search('Port')
+
+    - name: show port for debug
+      debug:
+        msg:                                  "{{ find_port }}"
+
+    - name: check port
+      command:                                netstat -tulnp
+      register:                               check_port_status
+
+    - name: message if port is already used 
+      debug:
+        msg:                                  "This port is already used!"
+      when:                                   check_port_status is search('{{ ssh_port }}')
+
+# Configure sshd file
+    - name: configure sshd file if users are not in sudo group
+      template:
+        src:                                  sshd_config_root.j2
+        dest:                                 /etc/ssh/sshd_config
+      notify:
+        - restart daemon-reload
+        - restart ssh
+        - add port to inventory file
+      when:                       
+         - "'{{ ssh_port }}' not in check_port_status"
+         - sudo_users | length == 0           
+      register:                               changed_ssh_port
+
+    - name: configure sshd file if users are in sudo group
+      template:
+        src:                                  sshd_config_no_root.j2
+        dest:                                 /etc/ssh/sshd_config
+      notify:
+        - restart daemon-reload
+        - restart ssh
+        - add port to inventory file
+      when:                       
+         - "'{{ ssh_port }}' not in check_port_status" 
+         - sudo_users | length > 0           
+      register:                               changed_ssh_port

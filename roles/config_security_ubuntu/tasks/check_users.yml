@@ -1,0 +1,12 @@
+# Check user with sudo
+- name: check users in sudo group
+  command:                                        getent group sudo
+  register:                                       sudo_group_info
+
+- name: check and register users in stdout
+  set_fact:
+    sudo_users:                                   "{{ sudo_group_info.stdout.split(':')[-1].split(',') if ':' in sudo_group_info.stdout else [] }}"
+  
+- name: debug
+  debug:
+    var:                                          sudo_group_info

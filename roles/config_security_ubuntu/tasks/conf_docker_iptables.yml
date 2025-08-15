@@ -1,0 +1,25 @@
+# Config docker iptables rules if var conf_docker = yes 
+- name: Flush all iptables rules
+  become: true
+  ansible.builtin.iptables:
+    flush: true
+
+- name: Add Docker iptables rules
+  become: true
+  ansible.builtin.iptables:
+    comment:              "{{ item.comment | default('Docker rules') }}"
+    chain:                "{{ item.chain | default('FORWARD') }}"
+    in_interface:         "{{ item.in_interface | default(omit) }}"
+    out_interface:        "{{ item.out_interface | default(omit) }}"
+    jump:                 "{{ item.jump | default('ACCEPT') }}"
+    state:                "{{ item.state | default('present') }}"
+    source:               "{{ item.source | default(omit) }}"
+    table:                "{{ item.table | default(omit) }}"
+    ctstate:              "{{ item.ctstate | default(omit) }}"
+  loop:                   "{{ docker_vars }}"
+
+
+- name: Save current IPv4 iptables rules
+  shell:                  iptables-save > /etc/iptables/rules.v4
+  notify:
+    - restart docker

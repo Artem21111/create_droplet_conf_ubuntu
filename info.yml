@@ -1,0 +1,74 @@
+---
+- hosts: localhost
+  connection: local
+  vars_files: 
+    - ./vars/digital_ocean.yml
+    - ./files/users.yml
+
+  tasks:
+    - name: droplets info
+      digitalocean.cloud.droplets_info:
+       token: "{{ digital_ocean_token }}"
+       name: artemTest1
+      register: info 
+
+    - name: show info 
+      debug:
+        var: info
+
+#    - name: firewall info
+#      digitalocean.cloud.firewalls_info:
+#        token: "{{ digital_ocean_token }}"
+#      register: firewalls_info
+
+#    - name: show firewall info
+#      debug:
+#        var: firewalls_info
+
+#    - name: create droplet 
+#      digitalocean.cloud.droplet:
+#        token: "{{ digital_ocean_token }}"
+#        state: present
+#        name: artemBaidikovTest1
+#        region: nyc1
+#        size: s-1vcpu-1gb 
+#        image: ubuntu-24-04-x64
+#        ssh_keys: "{{ open_ssh_key }}" # Add key id/name or fingerprint
+
+#    - name: create droplet 
+#      digitalocean.cloud.droplet:
+#        token: "{{ digital_ocean_token }}"
+#        state: present
+#        name: artemBaidikovTest12
+#        region: fra
+#        size: s-1vcpu-1gb 
+#        image: ubuntu-24-04-x64
+#        user_data: "{{ lookup('template', 'ubuntu_user_ssh_conf.yaml.j2') }}"
+#      register: droplet_info
+
+#    - name: show cloud-init file 
+#      debug:
+#        msg: "{{ lookup('template', 'ubuntu_user_ssh_conf.yaml.j2') }}"
+
+#    - name: show new droplet info 
+#      debug:
+#        var: droplet_info
+
+#    - name: add ssh key to digital ocean
+#      digitalocean.cloud.ssh_key:
+#        token: "{{ digital_ocean_token }}"
+#        state: present
+#        public_key: >-
+#          "{{ open_ssh_key }}"
+#        name: artem_baidikov_ssh_key
+
+#    - name: show ssh keys
+#      digitalocean.cloud.ssh_keys_info:
+#        token: "{{ digital_ocean_token }}"
+#      register: ssh_keys_info
+
+#    - name: debug
+#      debug:
+#        var: ssh_keys_info
+      
+

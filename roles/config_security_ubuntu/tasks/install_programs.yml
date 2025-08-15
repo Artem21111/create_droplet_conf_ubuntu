@@ -1,0 +1,20 @@
+# Install all programs and utils
+#    - name: install python on server
+#      raw:                                    /usr/bin/apt-get python3
+
+    - name: Update apt cache  
+      ansible.builtin.apt:    
+        update_cache:                         yes
+
+    - name: install programs
+      apt:
+        name:                                 [
+                                              'fail2ban',
+                                              'iptables',
+                                              'ipset',
+                                              'net-tools', 
+                                              'vim',
+                                              'htop',
+                                              'iptables-persistent'
+                                              ]
+        state:                                present

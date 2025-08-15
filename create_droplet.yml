@@ -1,0 +1,59 @@
+# Playbook to create droplet and write hosts info in inventory file
+# ansible-playbook -i ./inventory/crt_droplet create_droplet.yml -e "crt_DropletHost=ArtemTest1 droplet_name=artemTest1 droplet_tags="
+---
+- hosts: localhost
+  vars_files: 
+#    - ./vars/digital_ocean.yml
+    - ./files/users.yml
+    - "{{ inventory_file }}.conf"
+
+  vars:
+    crtDropletHost:                               "{{ crt_DropletHost | default('crtDroplet') }}"
+    full_droplet_hostname:                        "{{ ENV }}-{{ droplet_region | default('fra') }}-{{ droplet_name }}"
+    
+  tasks:
+
+# Try create group and check hosts
+    - name: add group to inventory if not exist
+      lineinfile:
+        path:                                     "{{ inventory_file }}" 
+        regexp:                                   '^\[{{ crtDropletHost }}\]'
+        line:                                     '[{{ crtDropletHost }}]'
+        state:                                    present
+
+    - name: check host in groups 
+      set_fact:
+        host_exists:                              "{{ full_droplet_hostname in groups[crtDropletHost] | default([]) }}"
+  
+    - name: Stop and alert if droplet exist
+      ansible.builtin.fail:
+        msg:                                      "Droplet {{ droplet_name }} already exists in {{ crtDropletHost }}. Stop playbook."
+      when:                                       host_exists
+
+# Main task to create droplet
+    - name: create droplet 
+      digitalocean.cloud.droplet:
+        token:                                    "{{ digital_ocean_token }}"
+        state:                                    present
+        name:                                     "{{ droplet_name }}" 
+        tags:                                     "{{ droplet_tags | default('') }}"
+        region:                                   "{{ droplet_region | default('fra') }}" 
+        size:                                     "{{ droplet_size }}"
+        image:                                    "{{ droplet_image }}"
+        user_data:                                "{{ lookup('template', 'ubuntu_user_ssh_conf.yaml.j2') }}"
+
+# Get info about droplet and write ip address into inventory file
+    - name: droplets info
+      digitalocean.cloud.droplets_info:
+       token:                                     "{{ digital_ocean_token }}"
+       name:                                      "{{ droplet_name }}"
+      register:                                   droplet_info 
+
+    - name: add info about host to group
+      lineinfile:
+        path:                                     "{{ inventory_file }}" 
+        insertafter:                              '^\[{{ crtDropletHost }}\]'
+        line:                                     "{{ ENV }}-{{ droplet_region | default ('fra') }}-{{ droplet_name }} ansible_ssh_host={{ droplet_info.droplets[0].networks.v4 | selectattr('type', 'equalto', 'public') | map(attribute='ip_address') | list | first }} ansible_ssh_port={{ droplet_ssh_port | default ('22') }}"
+        state:                                    present
+
+

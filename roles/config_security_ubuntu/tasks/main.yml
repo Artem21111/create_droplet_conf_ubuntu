@@ -1,0 +1,41 @@
+# Role for configuration Ubuntu OS for security. 
+# Using configure sshd, fail2ban, iptables with ipset, iptables for docker.
+
+---
+- name: install python3, fail2ban, iptables, ipset, net-tools, vim, htop
+  import_tasks:                     install_programs.yml
+
+- name: check users in group sudo
+  import_tasks:                     check_users.yml
+
+- name: conf sshd port 
+  import_tasks:                     conf_ssh.yml
+
+- name: conf fail2ban
+  import_tasks:                     conf_fail2ban.yml
+
+- name: conf ipset whitelist
+  import_tasks:                     conf_ipset.yml
+
+- name: del old ip set addresses
+  import_tasks:                     delete_old_ipset_address.yml
+
+- name: install docker if need 
+  import_tasks:                     install_docker.yml
+  when:                             install_docker is defined and install_docker == 'yes'
+
+- name: conf docker iptables
+  import_tasks:                     conf_docker_iptables.yml
+  when:                             conf_docker is defined and conf_docker == 'yes'
+
+- name: conf iptables
+  import_tasks:                     conf_iptables.yml
+
+
+
+
+
+
+
+
+

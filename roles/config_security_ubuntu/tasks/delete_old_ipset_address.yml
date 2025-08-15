@@ -1,0 +1,22 @@
+    # Delete old ipset ip addresses
+    - name: get ipset list
+      set_fact:
+        ip_set_list:                            "{{ check_list | regex_findall('\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b') }}"
+      when:                                     check_list is search('whitelist')
+
+    - name: comparison ipset lists
+      set_fact:
+        ip_list_delate:                        "{{ ip_set_list | difference(united_list | unique) }}"
+      when:                                     check_list is search('whitelist')
+
+    - name: delate ip set ipaddress
+      command:                                  ipset del whitelist {{ item }}
+      loop:                                     "{{ ip_list_delate }}"
+      when:                                     check_ip_in_whitelist_add is search('already added') or check_ip_in_whitelist_add.failed == false
+      ignore_errors:                            true
+      register:                                 check_delete_old_ip_address
+
+    - name: message if delete not
+      debug:
+        msg:                                    "Cannot delete, not added!"
+      when:                                     check_delete_old_ip_address is search('not added')
